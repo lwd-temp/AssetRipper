@@ -1,8 +1,7 @@
-﻿using AssetRipper.Assets.Collections;
-using AssetRipper.Assets.Export;
+﻿using AssetRipper.Assets.Cloning;
+using AssetRipper.Assets.Collections;
 using AssetRipper.Assets.Metadata;
 using AssetRipper.IO.Endian;
-using AssetRipper.Yaml;
 
 namespace AssetRipper.Assets;
 
@@ -28,13 +27,6 @@ public interface IUnityObjectBase : IUnityAssetBase
 	/// The <see cref="AssetInfo.PathID"/> of this object within <see cref="Collection"/>.
 	/// </summary>
 	long PathID { get; }
-	/// <summary>
-	/// A random GUID for this object.
-	/// </summary>
-	/// <remarks>
-	/// This may be overridden by export code, eg for MonoScripts.
-	/// </remarks>
-	UnityGuid GUID { get; }
 	/// <summary>
 	/// The original path of this object, if known.
 	/// </summary>
@@ -66,8 +58,45 @@ public interface IUnityObjectBase : IUnityAssetBase
 	/// </summary>
 	IUnityObjectBase? MainAsset { get; set; }
 
-	YamlDocument ExportYamlDocument(IExportContainer container);
-	string GetBestName();
+	/// <summary>
+	/// Get the best name for this object.
+	/// </summary>
+	/// <remarks>
+	/// In order of preference:<br/>
+	/// 1. <see cref="IHasNameString.NameString"/><br/>
+	/// 2. <see cref="OriginalName"/><br/>
+	/// 3. <see cref="ClassName"/><br/>
+	/// <see cref="OriginalName"/> has secondary preference because file importers can create assets with a different name from the file.
+	/// </remarks>
+	/// <returns>A nonempty string.</returns>
+	public sealed string GetBestName()
+	{
+		string? name = (this as INamed)?.Name;
+		if (!string.IsNullOrEmpty(name))
+		{
+			return name;
+		}
+		else if (!string.IsNullOrEmpty(OriginalName))
+		{
+			return OriginalName;
+		}
+		else
+		{
+			return ClassName;
+		}
+	}
+
+	public sealed void CopyValues(IUnityObjectBase? source)
+	{
+		if (source is null)
+		{
+			Reset();
+		}
+		else
+		{
+			CopyValues(source, new PPtrConverter(source, this));
+		}
+	}
 }
 public static class UnityObjectBaseExtensions
 {

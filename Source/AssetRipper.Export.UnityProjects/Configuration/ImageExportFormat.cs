@@ -8,6 +8,11 @@
 		/// </summary>
 		Bmp,
 		/// <summary>
+		/// Lossless. OpenEXR<br/>
+		/// <see href="https://en.wikipedia.org/wiki/OpenEXR"/>
+		/// </summary>
+		Exr,
+		/// <summary>
 		/// Lossless. Radiance HDR<br/>
 		/// <see href="https://en.wikipedia.org/wiki/RGBE_image_format"/>
 		/// </summary>
@@ -36,12 +41,30 @@
 			return _this switch
 			{
 				ImageExportFormat.Bmp => "bmp",
+				ImageExportFormat.Exr => "exr",
 				ImageExportFormat.Hdr => "hdr",
 				ImageExportFormat.Jpeg => "jpeg",
 				ImageExportFormat.Png => "png",
 				ImageExportFormat.Tga => "tga",
 				_ => throw new ArgumentOutOfRangeException(nameof(_this)),
 			};
+		}
+
+		//When extension types come in C# 13, this will be more convenient to use.
+		public static bool TryGetFromExtension(string extension, out ImageExportFormat format)
+		{
+			format = extension switch
+			{
+				"bmp" => ImageExportFormat.Bmp,
+				"exr" => ImageExportFormat.Exr,
+				"hdr" => ImageExportFormat.Hdr,
+				"jpeg" => ImageExportFormat.Jpeg,
+				"jpg" => ImageExportFormat.Jpeg,
+				"png" => ImageExportFormat.Png,
+				"tga" => ImageExportFormat.Tga,
+				_ => (ImageExportFormat)(-1),
+			};
+			return format >= 0;
 		}
 	}
 }

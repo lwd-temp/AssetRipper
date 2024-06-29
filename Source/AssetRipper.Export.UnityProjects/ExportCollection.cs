@@ -1,19 +1,24 @@
 using AssetRipper.Assets;
 using AssetRipper.Assets.Collections;
-using AssetRipper.Assets.Export;
-using AssetRipper.Assets.Metadata;
 using AssetRipper.Export.Modules.Shaders.IO;
 using AssetRipper.IO.Files.SerializedFiles;
 using AssetRipper.IO.Files.Utils;
 using AssetRipper.SourceGenerated.Classes.ClassID_1001;
+using AssetRipper.SourceGenerated.Classes.ClassID_1102;
+using AssetRipper.SourceGenerated.Classes.ClassID_1107;
+using AssetRipper.SourceGenerated.Classes.ClassID_1109;
 using AssetRipper.SourceGenerated.Classes.ClassID_1113;
 using AssetRipper.SourceGenerated.Classes.ClassID_121;
 using AssetRipper.SourceGenerated.Classes.ClassID_134;
+using AssetRipper.SourceGenerated.Classes.ClassID_158;
 using AssetRipper.SourceGenerated.Classes.ClassID_1953259897;
 using AssetRipper.SourceGenerated.Classes.ClassID_200;
+using AssetRipper.SourceGenerated.Classes.ClassID_206;
 using AssetRipper.SourceGenerated.Classes.ClassID_21;
 using AssetRipper.SourceGenerated.Classes.ClassID_221;
-using AssetRipper.SourceGenerated.Classes.ClassID_241;
+using AssetRipper.SourceGenerated.Classes.ClassID_240;
+using AssetRipper.SourceGenerated.Classes.ClassID_28;
+using AssetRipper.SourceGenerated.Classes.ClassID_319;
 using AssetRipper.SourceGenerated.Classes.ClassID_48;
 using AssetRipper.SourceGenerated.Classes.ClassID_62;
 using AssetRipper.SourceGenerated.Classes.ClassID_74;
@@ -22,7 +27,6 @@ using AssetRipper.SourceGenerated.Classes.ClassID_850595691;
 using AssetRipper.SourceGenerated.Classes.ClassID_89;
 using AssetRipper.SourceGenerated.Classes.ClassID_91;
 using AssetRipper.SourceGenerated.Extensions;
-using AssetRipper.SourceGenerated.MarkerInterfaces;
 using AssetRipper.Yaml;
 using System.Text;
 
@@ -30,6 +34,8 @@ namespace AssetRipper.Export.UnityProjects
 {
 	public abstract class ExportCollection : IExportCollection
 	{
+		public virtual UnityGuid GUID => throw new NotSupportedException();
+
 		protected static void ExportMeta(IExportContainer container, Meta meta, string filePath)
 		{
 			string metaPath = $"{filePath}{MetaExtension}";
@@ -61,7 +67,7 @@ namespace AssetRipper.Export.UnityProjects
 			string uniqueName = FileUtils.GetUniqueName(path, fullName, FileUtils.MaxFileNameLength - MetaExtension.Length);
 			string filePath = Path.Combine(path, uniqueName);
 			AssetExporter.Export(container, asset, filePath);
-			Meta meta = new Meta(asset.GUID, importer);
+			Meta meta = new Meta(GUID, importer);
 			ExportMeta(container, meta, filePath);
 		}
 
@@ -70,6 +76,7 @@ namespace AssetRipper.Export.UnityProjects
 			string fileName = asset switch
 			{
 				IPrefabInstance prefab => prefab.GetName(),
+				IShader shader when !string.IsNullOrEmpty(shader.OriginalName) => shader.OriginalName,
 				_ => asset.GetBestName(),
 			};
 			fileName = FileUtils.RemoveCloneSuffixes(fileName);
@@ -95,6 +102,7 @@ namespace AssetRipper.Export.UnityProjects
 
 		protected virtual string GetExportExtension(IUnityObjectBase asset)
 		{
+			//https://docs.unity3d.com/Manual/BuiltInImporters.html
 			return asset switch
 			{
 				IShader => "shader",
@@ -102,10 +110,11 @@ namespace AssetRipper.Export.UnityProjects
 				IAnimationClip => "anim",
 				IAnimatorController => "controller",
 				IAnimatorOverrideController => "overrideController",
-				IAudioMixerController => "mixer",
-				IAvatarMaskMarker => "mask",
+				IAudioMixer => "mixer",
+				IAvatarMask => "mask",
 				IShaderVariantCollection => "shadervariants",
 				ICubemap => "cubemap",
+				ITexture2D => "texture2D",
 				IFlare => "flare",
 				ILightingSettings => "lighting",
 				ILightmapParameters => "giparams",
@@ -113,6 +122,11 @@ namespace AssetRipper.Export.UnityProjects
 				IPhysicsMaterial2D => "physicsMaterial2D",
 				IRenderTexture => "renderTexture",
 				ITerrainLayer => "terrainlayer",
+				IWebCamTexture => "webCamTexture",
+				IAnimatorState => "state",
+				IAnimatorStateMachine => "statemachine",
+				IAnimatorTransition => "transition",
+				IBlendTree => "blendtree",
 				_ => AssetExtension
 			};
 		}

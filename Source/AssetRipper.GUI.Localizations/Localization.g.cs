@@ -495,6 +495,16 @@ partial class Localization
 	public static string Licenses => Get("licenses");
 	
 	/// <summary>
+	/// Lightmap Texture Export Format
+	/// </summary>
+	public static string LightmapTextureExportTitle => Get("lightmap_texture_export_title");
+	
+	/// <summary>
+	/// This affects all exported lightmap textures.
+	/// </summary>
+	public static string LightmapTextureFormatDescription => Get("lightmap_texture_format_description");
+	
+	/// <summary>
 	/// Load
 	/// </summary>
 	public static string Load => Get("load");
@@ -761,6 +771,11 @@ partial class Localization
 	public static string Save => Get("save");
 	
 	/// <summary>
+	/// Save Raw Data
+	/// </summary>
+	public static string SaveRawData => Get("save_raw_data");
+	
+	/// <summary>
 	/// Save Settings to Disk
 	/// </summary>
 	public static string SaveSettingsToDisk => Get("save_settings_to_disk");
@@ -946,6 +961,11 @@ partial class Localization
 	public static string ShaderAssetFormatYamlDescription => Get("shader_asset_format_yaml_description");
 	
 	/// <summary>
+	/// Size
+	/// </summary>
+	public static string Size => Get("size");
+	
+	/// <summary>
 	/// Skip StreamingAssets Folder
 	/// </summary>
 	public static string SkipStreamingAssets => Get("skip_streaming_assets");
@@ -994,6 +1014,11 @@ partial class Localization
 	/// Success!
 	/// </summary>
 	public static string Success => Get("success");
+	
+	/// <summary>
+	/// Target Version For Version Changing
+	/// </summary>
+	public static string TargetVersionForVersionChanging => Get("target_version_for_version_changing");
 	
 	/// <summary>
 	/// Terrain Export Format

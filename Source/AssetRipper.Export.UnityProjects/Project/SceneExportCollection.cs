@@ -1,7 +1,5 @@
 using AssetRipper.Assets;
 using AssetRipper.Assets.Collections;
-using AssetRipper.Assets.Export;
-using AssetRipper.Assets.Metadata;
 using AssetRipper.Import.Logging;
 using AssetRipper.IO.Files;
 using AssetRipper.Processing;
@@ -35,7 +33,7 @@ namespace AssetRipper.Export.UnityProjects.Project
 			string filePath = Path.Combine(projectDirectory, $"{Scene.Path}.{ExportExtension}");
 			string folderPath = Path.GetDirectoryName(filePath)!;
 
-			if (SceneHelpers.IsDuplicate(container, File))
+			if (IsSceneDuplicate(container))
 			{
 				if (System.IO.File.Exists(filePath))
 				{
@@ -108,6 +106,16 @@ namespace AssetRipper.Export.UnityProjects.Project
 			}
 		}
 
+		private bool IsSceneDuplicate(IExportContainer container)
+		{
+			if (SceneHelpers.IsSceneName(File.Name))
+			{
+				int index = SceneHelpers.FileNameToSceneIndex(File.Name, File.Version);
+				return container.IsSceneDuplicate(index);
+			}
+			return false;
+		}
+
 		public override IEnumerable<IUnityObjectBase> Assets
 		{
 			get
@@ -142,7 +150,7 @@ namespace AssetRipper.Export.UnityProjects.Project
 		public override string Name => Scene.Name;
 
 		public override AssetCollection File => CurrentFile;
-		public UnityGuid GUID => Scene.GUID;
+		public override UnityGuid GUID => Scene.GUID;
 		public override IAssetExporter AssetExporter { get; }
 		public SceneHierarchyObject Hierarchy { get; }
 		public SceneDefinition Scene => Hierarchy.Scene;

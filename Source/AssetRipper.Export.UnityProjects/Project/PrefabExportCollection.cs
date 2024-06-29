@@ -1,6 +1,4 @@
 ﻿using AssetRipper.Assets;
-using AssetRipper.Assets.Export;
-using AssetRipper.Assets.Metadata;
 using AssetRipper.IO.Files;
 using AssetRipper.IO.Files.SerializedFiles;
 using AssetRipper.Processing;
@@ -87,7 +85,7 @@ namespace AssetRipper.Export.UnityProjects.Project
 		{
 			return new MetaPtr(
 				ExportIdHandler.GetMainExportID((int)ClassIDType.PrefabInstance),
-				Asset.GUID,
+				GUID,
 				EmitPrefabAsset ? AssetType.Serialized : AssetType.Meta);
 		}
 

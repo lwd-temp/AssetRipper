@@ -1,7 +1,5 @@
 using AssetRipper.Assets;
 using AssetRipper.Assets.Collections;
-using AssetRipper.Assets.Export;
-using AssetRipper.Assets.Metadata;
 using AssetRipper.IO.Files.Utils;
 using AssetRipper.SourceGenerated.Classes.ClassID_1034;
 
@@ -28,7 +26,7 @@ namespace AssetRipper.Export.UnityProjects
 			bool result = ExportInner(container, filePath, projectDirectory);
 			if (result)
 			{
-				Meta meta = new Meta(Asset.GUID, CreateImporter(container));
+				Meta meta = new Meta(GUID, CreateImporter(container));
 				ExportMeta(container, meta, filePath);
 				return true;
 			}
@@ -54,7 +52,7 @@ namespace AssetRipper.Export.UnityProjects
 			long exportID = GetExportID(container, asset);
 			return isLocal ?
 				new MetaPtr(exportID) :
-				new MetaPtr(exportID, Asset.GUID, AssetExporter.ToExportType(Asset));
+				new MetaPtr(exportID, GUID, AssetExporter.ToExportType(Asset));
 		}
 
 		/// <summary>
@@ -80,6 +78,7 @@ namespace AssetRipper.Export.UnityProjects
 			return importer;
 		}
 
+		public override UnityGuid GUID { get; } = UnityGuid.NewGuid();
 		public override IAssetExporter AssetExporter { get; }
 		public override AssetCollection File => Asset.Collection;
 		public override IEnumerable<IUnityObjectBase> Assets

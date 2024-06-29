@@ -1,6 +1,5 @@
 using AsmResolver.DotNet;
 using AssetRipper.Assets;
-using AssetRipper.Assets.Export;
 using AssetRipper.Export.UnityProjects.Scripts.AssemblyDefinitions;
 using AssetRipper.Import.Logging;
 using AssetRipper.Import.Structure.Assembly;
@@ -62,7 +61,7 @@ public sealed class ScriptExportCollection : ScriptExportCollectionBase
 
 		string pluginsFolder = Path.Combine(assetsDirectoryPath, "Plugins");
 
-		foreach (AssemblyDefinition assembly in AssetExporter.AssemblyManager.GetAssemblies())
+		foreach (ModuleDefinition assembly in AssetExporter.AssemblyManager.GetAssemblies())
 		{
 			string assemblyName = assembly.Name!;
 			AssemblyExportType exportType = AssetExporter.GetExportType(assemblyName);
